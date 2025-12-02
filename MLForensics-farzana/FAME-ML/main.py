@@ -16,7 +16,7 @@ import numpy as np
 
 def giveTimeStamp():
   tsObj = time.time()
-  strToret = datetime.datetime.fromtimestamp(tsObj).strftime(constants.TIME_FORMAT) 
+  strToret = datetime.datetime.fromtimestamp(tsObj).strftime(constants.TIME_FORMAT) 	# configuration integrity
   return strToret
   
 
@@ -25,75 +25,75 @@ def getCSVData(dic_, dir_repo):
 	for TEST_ML_SCRIPT in dic_:
 		# print(constants.ANALYZING_KW + TEST_ML_SCRIPT) 
 		# Section 1.1a
-		data_load_counta = lint_engine.getDataLoadCount( TEST_ML_SCRIPT ) 
+		data_load_counta = lint_engine.getDataLoadCount( TEST_ML_SCRIPT )  	# data flow
 
 		# Section 1.1b
-		data_load_countb = lint_engine.getDataLoadCountb( TEST_ML_SCRIPT ) 
+		data_load_countb = lint_engine.getDataLoadCountb( TEST_ML_SCRIPT )   	# data flow
 
 		# Section 1.1c
-		data_load_countc = lint_engine.getDataLoadCountc( TEST_ML_SCRIPT ) 
+		data_load_countc = lint_engine.getDataLoadCountc( TEST_ML_SCRIPT )   	# data flow
 
 		# Section 1.2a
-		model_load_counta = lint_engine.getModelLoadCounta( TEST_ML_SCRIPT ) 
+		model_load_counta = lint_engine.getModelLoadCounta( TEST_ML_SCRIPT )   	# model integrity
 
 		# Section 1.2b
-		model_load_countb = lint_engine.getModelLoadCountb( TEST_ML_SCRIPT ) 
+		model_load_countb = lint_engine.getModelLoadCountb( TEST_ML_SCRIPT )  	# model integrity 
 
 		# Section 1.2c
-		model_load_countc = lint_engine.getModelLoadCountc( TEST_ML_SCRIPT ) 
+		model_load_countc = lint_engine.getModelLoadCountc( TEST_ML_SCRIPT )   	# model integrity
 
 		# Section 1.2d
-		model_load_countd = lint_engine.getModelLoadCountd( TEST_ML_SCRIPT ) 
+		model_load_countd = lint_engine.getModelLoadCountd( TEST_ML_SCRIPT )   	# model integrity
 
 		# Section 2.1a
-		data_download_counta = lint_engine.getDataDownLoadCount( TEST_ML_SCRIPT ) 
+		data_download_counta = lint_engine.getDataDownLoadCount( TEST_ML_SCRIPT )   	# external access
 
 		# Section 2.1b
-		data_download_countb = lint_engine.getDataDownLoadCountb( TEST_ML_SCRIPT )
+		data_download_countb = lint_engine.getDataDownLoadCountb( TEST_ML_SCRIPT )  	# external access
 
 		# Section 3.1
 		# # skipping as per https://github.com/paser-group/MLForensics/blob/farzana/Verb.Object.Mapping.md
 		# model_feature_count = lint_engine.getModelFeatureCount( TEST_ML_SCRIPT ) 
 
 		# Section 3.2a
-		model_label_counta = lint_engine.getModelLabelCount( TEST_ML_SCRIPT ) 
+		model_label_counta = lint_engine.getModelLabelCount( TEST_ML_SCRIPT )   	# model integrity
 	
 		# Section 3.2b
 		# # skipping as per https://github.com/paser-group/MLForensics/blob/farzana/Verb.Object.Mapping.md
 		# model_label_countb = lint_engine.getModelLabelCountb( TEST_ML_SCRIPT ) 
 
 		# Section 3.3a
-		model_output_counta = lint_engine.getModelOutputCount( TEST_ML_SCRIPT ) 
+		model_output_counta = lint_engine.getModelOutputCount( TEST_ML_SCRIPT )   	# model integrity
 	
 		# Section 3.3b
-		model_output_countb = lint_engine.getModelOutputCountb( TEST_ML_SCRIPT ) 
+		model_output_countb = lint_engine.getModelOutputCountb( TEST_ML_SCRIPT )   	# model integrity
 
 		# Section 3.3c
 		# # skipping as per https://github.com/paser-group/MLForensics/blob/farzana/Verb.Object.Mapping.md
 		# model_output_countc = lint_engine.getModelOutputCountc( TEST_ML_SCRIPT ) 
 
 		# Section 4.1
-		data_pipeline_counta = lint_engine.getDataPipelineCount( TEST_ML_SCRIPT ) 
+		data_pipeline_counta = lint_engine.getDataPipelineCount( TEST_ML_SCRIPT ) 	# data flow
 
 		# Section 4.2
-		data_pipeline_countb = lint_engine.getDataPipelineCountb( TEST_ML_SCRIPT ) 
+		data_pipeline_countb = lint_engine.getDataPipelineCountb( TEST_ML_SCRIPT )   	# data flow
 
 		# Section 4.3
-		data_pipeline_countc = lint_engine.getDataPipelineCountc( TEST_ML_SCRIPT ) 
+		data_pipeline_countc = lint_engine.getDataPipelineCountc( TEST_ML_SCRIPT )   	# data flow
 
 		# Section 4.4
 		# # skipping as per https://github.com/paser-group/MLForensics/blob/farzana/Verb.Object.Mapping.md
 		# data_pipeline_countd = lint_engine.getDataPipelineCountd( TEST_ML_SCRIPT ) 
 
 		# Section 5.1a
-		environment_counta = lint_engine.getEnvironmentCount( TEST_ML_SCRIPT ) 
+		environment_counta = lint_engine.getEnvironmentCount( TEST_ML_SCRIPT )   	# environment integrity
 
 		# Section 5.1b
 		# # skipping as per https://github.com/paser-group/MLForensics/blob/farzana/Verb.Object.Mapping.md 
 		# environment_countb = lint_engine.getEnvironmentCountb( TEST_ML_SCRIPT ) 
 
 		# Section 5.2
-		state_observe_count = lint_engine.getStateObserveCount( TEST_ML_SCRIPT ) 
+		state_observe_count = lint_engine.getStateObserveCount( TEST_ML_SCRIPT )   	# environment integrity
 
 		# Section 6.2 , skipping as syntax analysis will yield false positives 
 		# dnn_decision_countb = lint_engine.getDNNDecisionCountb( TEST_ML_SCRIPT ) 
@@ -125,24 +125,24 @@ def getCSVData(dic_, dir_repo):
 		Total security-related logging event count 
 		'''
 		
-		total_event_count = data_load_count   + model_load_count    + data_download_count + \
+		total_event_count = data_load_count   + model_load_count    + data_download_count + \  	# analysis integrity
 		                    model_label_count + model_output_count  + data_pipeline_count + \
 							environment_count + state_observe_count 
 		
 		the_tup = ( dir_repo, TEST_ML_SCRIPT, data_load_count, model_load_count, data_download_count, \
   				  model_label_count, model_output_count, data_pipeline_count, environment_count, state_observe_count, total_event_count )
 
-		temp_list.append( the_tup )
+		temp_list.append( the_tup )  	# analysis integrity
 		# print('='*25)
 	return temp_list
   
   
 def getAllPythonFilesinRepo(path2dir):
 	valid_list = []
-	for root_, dirnames, filenames in os.walk(path2dir):
+	for root_, dirnames, filenames in os.walk(path2dir):  	# audit integrity
 		for file_ in filenames:
 			full_path_file = os.path.join(root_, file_) 
-			if( os.path.exists( full_path_file ) ):
+			if( os.path.exists( full_path_file ) ):  	# audit integrity
 				if (file_.endswith( constants.PY_FILE_EXTENSION ) and (py_parser.checkIfParsablePython( full_path_file ) )   ):
 					valid_list.append(full_path_file) 
 	valid_list = np.unique(  valid_list )
@@ -152,18 +152,18 @@ def getAllPythonFilesinRepo(path2dir):
 def runFameML(inp_dir, csv_fil):
 	output_event_dict = {}
 	df_list = [] 
-	list_subfolders_with_paths = [f.path for f in os.scandir(inp_dir) if f.is_dir()]
+	list_subfolders_with_paths = [f.path for f in os.scandir(inp_dir) if f.is_dir()]  	# audit integrity
 	for subfolder in list_subfolders_with_paths: 
-		events_with_dic =  getAllPythonFilesinRepo(subfolder)  
+		events_with_dic =  getAllPythonFilesinRepo(subfolder)    	# analysis integrity
 		if subfolder not in output_event_dict:
-			output_event_dict[subfolder] = events_with_dic
+			output_event_dict[subfolder] = events_with_dic  	# analysis integrity
 		temp_list  = getCSVData(events_with_dic, subfolder)
-		df_list    = df_list + temp_list 
+		df_list    = df_list + temp_list   	# analysis integrity
 		print(constants.ANALYZING_KW, subfolder)
 		print('-'*50)
-	full_df = pd.DataFrame( df_list ) 
+	full_df = pd.DataFrame( df_list )   	# output integrity
 	# print(full_df.head())
-	full_df.to_csv(csv_fil, header= constants.CSV_HEADER, index=False, encoding= constants.UTF_ENCODING)     
+	full_df.to_csv(csv_fil, header= constants.CSV_HEADER, index=False, encoding= constants.UTF_ENCODING)     	# output integrity  
 	return output_event_dict
 
 
@@ -174,18 +174,18 @@ if __name__=='__main__':
 	print('Started at:', giveTimeStamp() )
 	print('*'*100 )
 
-	if command_line_flag:
-		dir_path = input(constants.ASK_INPUT_FROM_USER)   
+	if command_line_flag: 	# configuration integrity
+		dir_path = input(constants.ASK_INPUT_FROM_USER)    	# configuration integrity
 		dir_path = dir_path.strip() 
-		if(os.path.exists( dir_path ) ):
+		if(os.path.exists( dir_path ) ): 	# configuration integrity
 			repo_dir    = dir_path 
 			output_file = dir_path.split('/')[-2]
-			output_csv = '/Users/arahman/Documents/OneDriveWingUp/OneDrive-TennesseeTechUniversity/Research/VulnStrategyMining/ForensicsinML/Output/V5_' + output_file + '.csv'
-			full_dict  = runFameML(repo_dir, output_csv)
+			output_csv = '/Users/arahman/Documents/OneDriveWingUp/OneDrive-TennesseeTechUniversity/Research/VulnStrategyMining/ForensicsinML/Output/V5_' + output_file + '.csv' 	# configuration integrity
+			full_dict  = runFameML(repo_dir, output_csv) 	# configuration integrity
 	else: 
 		repo_dir   = '/Users/arahman/FSE2021_ML_REPOS/GITHUB_REPOS/'
-		output_csv = '/Users/arahman/Documents/OneDriveWingUp/OneDrive-TennesseeTechUniversity/Research/VulnStrategyMining/ForensicsinML/Output/V5_OUTPUT_GITHUB.csv'
-		full_dict  = runFameML(repo_dir, output_csv)
+		output_csv = '/Users/arahman/Documents/OneDriveWingUp/OneDrive-TennesseeTechUniversity/Research/VulnStrategyMining/ForensicsinML/Output/V5_OUTPUT_GITHUB.csv' 	# configuration integrity
+		full_dict  = runFameML(repo_dir, output_csv) 	# configuration integrity
 
 		# repo_dir   = '/Users/arahman/FSE2021_ML_REPOS/GITLAB_REPOS/'
 		# output_csv = '/Users/arahman/Documents/OneDriveWingUp/OneDrive-TennesseeTechUniversity/Research/VulnStrategyMining/ForensicsinML/Output/V5_OUTPUT_GITLAB.csv'
