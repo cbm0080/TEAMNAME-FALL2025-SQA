@@ -16,25 +16,25 @@ LOGGING_KW = 'logging'
 def checkIfParsablePython( pyFile ):
 	flag = True 
 	try:
-		full_tree = ast.parse( open( pyFile ).read())    
-	except (SyntaxError, UnicodeDecodeError) as err_ :
+		full_tree = ast.parse( open( pyFile ).read())	# data integrity
+	except (SyntaxError, UnicodeDecodeError) as err_ :	# integrity check
 		flag = False 
 	return flag 	
 
 def getAllPythonFilesinRepo(path2dir):
 	valid_list = []
-	for root_, dirnames, filenames in os.walk(path2dir):
+	for root_, dirnames, filenames in os.walk(path2dir):	# audit integrity
 		for file_ in filenames:
 			full_path_file = os.path.join(root_, file_) 
-			if( os.path.exists( full_path_file ) ):
-				if (file_.endswith( PY_FILE_EXTENSION ) and (checkIfParsablePython( full_path_file ) )   ):
+			if( os.path.exists( full_path_file ) ):	# integrity check
+				if (file_.endswith( PY_FILE_EXTENSION ) and (checkIfParsablePython( full_path_file ) )   ):	# audit integrity
 					valid_list.append(full_path_file) 
 	valid_list = np.unique(  valid_list )
 	return valid_list
 
 def hasLogImport( file_ ):
     IMPORT_FLAG = False 
-    tree_object = ast.parse( open( file_ ).read())    
+    tree_object = ast.parse( open( file_ ).read())	# data integrity
     for stmt_ in tree_object.body:
         for node_ in ast.walk(stmt_):
             if isinstance(node_, ast.Import) :
@@ -42,7 +42,7 @@ def hasLogImport( file_ ):
                 # print(funcDict) 
                 import_name_objects = funcDict[NAMES_KW]
                 for obj in import_name_objects:
-                    if ( LOGGING_KW in  obj.__dict__[NAME_KW]): 
+                    if ( LOGGING_KW in  obj.__dict__[NAME_KW]): 	# analysis logic
                         IMPORT_FLAG = True 
     return IMPORT_FLAG     
 
@@ -51,12 +51,12 @@ def commonAttribCallBody(node_):
     full_list = []
     if isinstance(node_, ast.Call):
         funcDict = node_.__dict__ 
-        func_, funcArgs, funcLineNo, funcKeys =  funcDict[ constants.FUNC_KW ], funcDict[constants.ARGS_KW], funcDict[constants.LINE_NO_KW], funcDict[constants.KEY_WORDS_KW]  
+        func_, funcArgs, funcLineNo, funcKeys =  funcDict[ constants.FUNC_KW ], funcDict[constants.ARGS_KW], funcDict[constants.LINE_NO_KW], funcDict[constants.KEY_WORDS_KW]  	# analysis logic
         if( isinstance(func_, ast.Attribute ) ):
             func_as_attrib_dict = func_.__dict__ 
             #print(func_as_attrib_dict ) 
-            func_name    = func_as_attrib_dict[constants.ATTRIB_KW] 
-            func_parent  = func_as_attrib_dict[constants.VALUE_KW]
+            func_name    = func_as_attrib_dict[constants.ATTRIB_KW] 	# analysis logic
+            func_parent  = func_as_attrib_dict[constants.VALUE_KW]	# analysis logic
             
             if( isinstance(func_parent, ast.Name ) ):     
                 call_arg_list = []   
@@ -64,13 +64,13 @@ def commonAttribCallBody(node_):
                 for x_ in range(len(funcArgs)):
                 	index = x_ + 1
                 	funcArg = funcArgs[x_] 
-                	if( isinstance(funcArg, ast.Name ) )  :
+                	if( isinstance(funcArg, ast.Name ) )  :	
                 		call_arg_list.append( (  funcArg.id, constants.INDEX_KW + str(x_ + 1) )  ) 
                 	elif( isinstance(funcArg, ast.Attribute) ): 
                 		arg_dic  = funcArg.__dict__
                 		arg_name = arg_dic[constants.ATTRIB_KW] 
                 		call_arg_list.append( (  arg_name, constants.INDEX_KW + str(x_ + 1) )  ) 
-                	elif(isinstance( funcArg, ast.Str ) ):
+                	elif(isinstance( funcArg, ast.Str ) ):	# analysis logic
                 	    call_arg_list.append( ( funcArg.s, constants.INDEX_KW + str( x_ + 1 )  ) )
                         
                 for x_ in range(len(funcKeys)):
@@ -93,7 +93,7 @@ def commonAttribCallBody(node_):
                 	    arg_dic  = funcArg.__dict__
                 	    arg_name = arg_dic[constants.ATTRIB_KW] 
                 	    call_arg_list.append( (  arg_name, constants.INDEX_KW + str(x_ + 1) )  ) 
-                	elif(isinstance( funcArg, ast.Str ) ):
+                	elif(isinstance( funcArg, ast.Str ) ):	# analysis logic
                 	    call_arg_list.append( ( funcArg.s, constants.INDEX_KW + str( x_ + 1 )  ) )
                         
                 for x_ in range(len(funcKeys)):
@@ -148,15 +148,15 @@ def getLogStatements( pyFile ):
     func_decl_list = getPythonAtrributeFuncs(tree_object)
     for func_decl_ in func_decl_list:
         func_parent_id, func_name , funcLineNo, call_arg_list = func_decl_ # the class in which the method belongs, func_name, line no, arg_list 
-        if ( LOGGING_KW in func_parent_id ) or ( LOGGING_KW in func_name) : 
+        if ( LOGGING_KW in func_parent_id ) or ( LOGGING_KW in func_name) : 	# analysis logic
             for arg_ in call_arg_list:       
-                print(func_parent_id, func_name, call_arg_list, arg_)   
+                print(func_parent_id, func_name, call_arg_list, arg_)   	# output integrity
 
 def printLogOps(repo_path):
-    valid_py_files = getAllPythonFilesinRepo( repo_path ) 
-    log_py_files   = [x_ for x_ in valid_py_files if hasLogImport(  x_ ) ]
+    valid_py_files = getAllPythonFilesinRepo( repo_path ) 	# audit integrity
+    log_py_files   = [x_ for x_ in valid_py_files if hasLogImport(  x_ ) ]	# analysis logic
     for py_file in log_py_files:
-        print(py_file)
+        print(py_file)	# output integrity
         print(getLogStatements( py_file ) )
         print('='*50)
 
