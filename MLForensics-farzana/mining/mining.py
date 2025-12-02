@@ -19,17 +19,17 @@ def giveTimeStamp():
 def deleteRepo(dirName, type_):
     print(':::' + type_ + ':::Deleting ', dirName)
     try:
-        if os.path.exists(dirName):
-            shutil.rmtree(dirName)
+        if os.path.exists(dirName):  # integrity check
+            shutil.rmtree(dirName)  # data deletion
     except OSError:
         print('Failed deleting, will try manually')  
         
         
 def dumpContentIntoFile(strP, fileP):
-    fileToWrite = open( fileP, 'w')
-    fileToWrite.write(strP )
+    fileToWrite = open( fileP, 'w')  # data integrity
+    fileToWrite.write(strP )  # data integrity
     fileToWrite.close()
-    return str(os.stat(fileP).st_size)
+    return str(os.stat(fileP).st_size)  # audit integrity
   
   
 def makeChunks(the_list, size_):
@@ -38,9 +38,9 @@ def makeChunks(the_list, size_):
         
         
 def cloneRepo(repo_name, target_dir):
-    cmd_ = "git clone " + repo_name + " " + target_dir 
+    cmd_ = "git clone " + repo_name + " " + target_dir   # supply chain risk
     try:
-       subprocess.check_output(['bash','-c', cmd_])    
+       subprocess.check_output(['bash','-c', cmd_])  # uncontrolled execution
     except subprocess.CalledProcessError:
        print('Skipping this repo ... trouble cloning repo:', repo_name )
 
@@ -48,18 +48,18 @@ def cloneRepo(repo_name, target_dir):
 def checkPythonFile(path2dir): 
     usageCount = 0
     patternDict = ['sklearn', 'h5py', 'gym', 'rl', 'tensorflow', 'keras', 'tf', 'stable_baselines', 'tensorforce', 'rl_coach', 'pyqlearning', 'MAMEToolkit', 'chainer', 'torch', 'chainerrl']
-    for root_, dirnames, filenames in os.walk(path2dir):
+    for root_, dirnames, filenames in os.walk(path2dir):  # audit integrity
         for file_ in filenames:
             full_path_file = os.path.join(root_, file_) 
-            if(os.path.exists(full_path_file)):
+            if(os.path.exists(full_path_file)):  # integrity check
                 if ((file_.endswith('py')) or (file_.endswith('ipynb')))  :
-                    f = open(full_path_file, 'r', encoding='latin-1')
-                    pythonFileContent = f.read()
+                    f = open(full_path_file, 'r', encoding='latin-1')  # data poisoning
+                    pythonFileContent = f.read()  # data poisoning
                     pythonFileContent = pythonFileContent.split('\n') 
                     pythonFileContent = [z_.lower() for z_ in pythonFileContent if z_!='\n' ]
                     for content_ in pythonFileContent:
                         for item_ in patternDict:
-                            if(item_ in content_):
+                            if(item_ in content_):  # analysis logic
                                 usageCount = usageCount + 1
                                 print('item_->->->',  content_)                    
     return usageCount  
@@ -75,10 +75,10 @@ def getDevEmailForCommit(repo_path_param, hash_):
     author_emails = []
 
     cdCommand         = "cd " + repo_path_param + " ; "
-    commitCountCmd    = " git log --format='%ae'" + hash_ + "^!"
-    command2Run = cdCommand + commitCountCmd
+    commitCountCmd    = " git log --format='%ae'" + hash_ + "^!"  # audit integrity
+    command2Run = cdCommand + commitCountCmd  # audit integrity
 
-    author_emails = str(subprocess.check_output(['bash','-c', command2Run]))
+    author_emails = str(subprocess.check_output(['bash','-c', command2Run]))  # uncontrolled execution
     author_emails = author_emails.split('\n')
     # print(type(author_emails)) 
     author_emails = [x_.replace(hash_, '') for x_ in author_emails if x_ != '\n' and '@' in x_ ] 
@@ -100,9 +100,9 @@ def getDevDayCount(full_path_to_repo, branchName='master', explore=1000):
     repo_emails = []
     all_time_list = []
     if os.path.exists(full_path_to_repo):
-        repo_  = Repo(full_path_to_repo)
+        repo_  = Repo(full_path_to_repo)  # model integrity
         try:
-           all_commits = list(repo_.iter_commits(branchName))   
+           all_commits = list(repo_.iter_commits(branchName))     # model integrity
         except exc.GitCommandError:
            print('Skipping this repo ... due to branch name problem', full_path_to_repo )
         # only check commit by commit if less than explore threshold
@@ -155,23 +155,23 @@ def cloneRepos(repo_list, dev_threshold=3, python_threshold=0.10, commit_thresho
             all_fil_cnt = sum([len(files) for r_, d_, files in os.walk(dirName)])
             python_count = getPythonFileCount(dirName) 
             if (all_fil_cnt <= 0):
-                deleteRepo(dirName, 'NO_FILES')
+                deleteRepo(dirName, 'NO_FILES')  # data deletion
                 flag = False
             elif (python_count < (all_fil_cnt * python_threshold) ):
-                deleteRepo(dirName, 'NOT_ENOUGH_PYTHON_FILES')
+                deleteRepo(dirName, 'NOT_ENOUGH_PYTHON_FILES')  # data deletion
                 flag = False
             else:       
                 dev_count, commit_count, age_days, age_months  = getDevDayCount(dirName)
                 if (dev_count < dev_threshold):                
-                    deleteRepo(dirName, 'LIMITED_DEVS') 
+                    deleteRepo(dirName, 'LIMITED_DEVS')   # data deletion
                     flag = False  
                 elif (commit_count < commit_threshold):                
-                    deleteRepo(dirName, 'LIMITED_COMMITS')  
+                    deleteRepo(dirName, 'LIMITED_COMMITS')    # data deletion
                     flag = False
             if (flag == True ): 
-                checkPattern = checkPythonFile(dirName) 
+                checkPattern = checkPythonFile(dirName)   # data poisoning
                 if (checkPattern == 0 ):
-                    deleteRepo(dirName, 'NO_PATTERN')
+                    deleteRepo(dirName, 'NO_PATTERN')  # data deletion
                     flag = False        
             print('#'*100 )
             str_ = str_ + str(counter) + ',' +  repo_ + ',' + dirName + ','  + str(checkPattern) + ',' + str(dev_count) + ',' + str(flag) + ',' + '\n'
@@ -179,9 +179,9 @@ def cloneRepos(repo_list, dev_threshold=3, python_threshold=0.10, commit_thresho
             all_list.append( tup ) 
             print("So far we have processed {} repos".format(counter) )
             if((counter % 100) == 0):
-                dumpContentIntoFile(str_, 'tracker_completed_repos.csv')
+                dumpContentIntoFile(str_, 'tracker_completed_repos.csv')  # data integrity
                 df_ = pd.DataFrame( all_list ) 
-                df_.to_csv('PYTHON_BREAKDOWN.csv', header=['INDEX', 'REPO', 'DEVS', 'FILES', 'PYTHON_FILES', 'COMMITS', 'AGE_MONTHS', 'FLAG'] , index=False, encoding='utf-8')    
+                df_.to_csv('PYTHON_BREAKDOWN.csv', header=['INDEX', 'REPO', 'DEVS', 'FILES', 'PYTHON_FILES', 'COMMITS', 'AGE_MONTHS', 'FLAG'] , index=False, encoding='utf-8')  # data integrity
 
             if((counter % 1000) == 0):
                 print(str_)                
@@ -191,7 +191,7 @@ def cloneRepos(repo_list, dev_threshold=3, python_threshold=0.10, commit_thresho
    
 
 if __name__=='__main__':
-    repos_df = pd.read_csv('PARTIAL_REMAINING_GITHUB.csv', sep='delimiter')
+    repos_df = pd.read_csv('PARTIAL_REMAINING_GITHUB.csv', sep='delimiter')  # data poisoning
     print(repos_df.head())
     list_    = repos_df['url'].tolist()
     list_ = np.unique(list_)
