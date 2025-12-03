@@ -1,7 +1,7 @@
 # SQA Project
 
 ## Team
-TEAMNAME
+TEAM CRJZ
 
 ## Members
 Christian Marlow, Richard Klinger, Josh Jelich, Zack Newsom
