@@ -32,6 +32,7 @@ Added continuous integration to the project via the use of Codacy, ensuring that
 - Checks out the modified branch, giving Codacy access to it.
 - Runs Codacy on the provided changes
 - Outputs the logs in the Github Actions tab.
+
 Of note is that this runs whenever code is pushed to *any* branch, as opposed to only main. The original implementation from workshop 7 only applied to the main branch, so further measures were taken ensure that all branches were subject to continuous integration. Additionally, there is consideration for changes that only modify the markdown files in the project. Codacy takes a decent amount of time to run, so preventing it from running when it's not needed saves time. These weren't things that were initially accounted for; these descisions were made as we continued working with the project in order to streamline and optimize the workflow to fit this project's needs.
 
 ## Conclusion
