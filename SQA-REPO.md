@@ -31,7 +31,7 @@ We log important running information like where the function is looking, what it
 ## Continuous Integration
 Added continuous integration to the project via the use of Codacy, ensuring that smells like hardcoded values and unnecessary redundancy are checked for when new code is pushed to the repository via Github Actions. Whenever changes are pushed or a merge request to main is submitted, the CI workflow takes the following actions:
 - Ensures that changes to code were made, as opposed to changes in the readme or other markdown files.
-  -If changes were exclusively made to markdown files, then the tasks below are skipped to save time. 
+  - If changes were exclusively made to markdown files, then the tasks below are skipped to save time. 
 - Checks out the modified branch, giving Codacy access to it.
 - Runs Codacy on the provided changes
 - Outputs the logs in the Github Actions tab.
